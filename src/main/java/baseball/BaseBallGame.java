@@ -6,10 +6,12 @@ public class BaseBallGame {
 
     public BaseBallGame() {
         this.inputView = new InputView();
+        this.resultView = new ResultView();
         this.resultGame = new ResultGame();
         this.targetValue = randKeyGenerator();
     }
     private final InputView inputView;
+    private final ResultView resultView;
     private final ResultGame resultGame;
     private String targetValue;
     private String inputValue;
@@ -20,10 +22,37 @@ public class BaseBallGame {
 
     //계산해주는 곳
     public void playBaseBall() {
-        this.inputValue = inputView.keyInput();
-        ResultGameDTO resultGameDTO = this.resultGame.calculateGame(this.targetValue, this.inputValue);
-        System.out.println("targetValue: "+ this.targetValue);
-        System.out.println("Strike: " + resultGameDTO.getStrike() + " Ball: " + resultGameDTO.getBall());
+        System.out.println(targetValue);
+        boolean isContinue = true;
+        while (isContinue) {
+            playGame();
+            isContinue = continueGame();
+            resetGame(isContinue);
+        }
+        inputView.closingScanner();
+    }
+
+    private void resetGame(boolean isContinue) {
+        if (isContinue){
+            this.targetValue = randKeyGenerator();
+        }
+    }
+
+    private boolean continueGame() {
+        return inputView.continueKeyInput().equals("1");
+    }
+
+    private void playGame() {
+        ResultGameDTO resultGame = getGameResult();
+        while (!isTarget(resultGame)) {
+            this.resultGame.resetResultGameDTO();
+            resultGame = getGameResult();
+        }
+    }
+
+    private ResultGameDTO getGameResult() {
+        this.inputValue = inputView.numberKeyInput();
+        return this.resultGame.calculateGame(this.targetValue, this.inputValue);
     }
 
     private String randKeyGenerator() {
@@ -36,5 +65,9 @@ public class BaseBallGame {
         return sb.toString();
     }
 
+    private boolean isTarget(ResultGameDTO resultGameDTO) {
+        resultView.printResult(resultGameDTO);
+        return resultGameDTO.getStrike() == 3;
+    }
 
 }

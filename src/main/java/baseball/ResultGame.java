@@ -9,7 +9,6 @@ public class ResultGame {
     ResultGameDTO resultGameDTO;
 
 
-
     public ResultGameDTO calculateGame(String targetValue, String inputValue) {
         for (int i = 0; i < 3; ++i) {
             checkTarget(targetValue, targetValue.substring(i, i + 1), inputValue.substring(i, i + 1));
